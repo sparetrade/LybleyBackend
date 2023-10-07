@@ -21,7 +21,7 @@ router.post("/login", async (req, res) => {
      let body = req.body;
      let servicer = await servicerRegistration.findOne({ businessPhone: body.contact });
      if (servicer) {
-       let otp = otpGenerator.generate(4, { upperCaseAlphabets: false, specialChars: false, lowerCaseAlphabets: false });
+       let otp = otpGenerator.generate(5, { upperCaseAlphabets: false, specialChars: false, lowerCaseAlphabets: false });
        await servicerRegistration.findByIdAndUpdate({ _id: servicer._id }, { otp: otp });
        smsSend(otp, body.contact);
        return res.json({ status: true, msg: "OTP Sent" });
@@ -30,7 +30,7 @@ router.post("/login", async (req, res) => {
      let user = await registration.findOne({ contact: body.contact });
      
      if (user) {
-       let otp = otpGenerator.generate(4, { upperCaseAlphabets: false, specialChars: false, lowerCaseAlphabets: false });
+       let otp = otpGenerator.generate(5, { upperCaseAlphabets: false, specialChars: false, lowerCaseAlphabets: false });
        await registration.findByIdAndUpdate({ _id: user._id }, { otp: otp });
        smsSend(otp, body.contact);
        return res.json({ status: true, msg: "OTP Sent" });
@@ -48,7 +48,7 @@ router.post("/login", async (req, res) => {
      let body = req.body;
      let user = await servicerRegistration.findOne({ businessPhone: body.contact });
      if (user) {
-       let otp = otpGenerator.generate(4, { upperCaseAlphabets: false, specialChars: false, lowerCaseAlphabets: false });
+       let otp = otpGenerator.generate(5, { upperCaseAlphabets: false, specialChars: false, lowerCaseAlphabets: false });
        await servicerRegistration.findByIdAndUpdate({ _id: user._id }, { otp: otp });
        smsSend(otp, body.contact);
        res.json({ status: true, msg: "OTP Sent" });
