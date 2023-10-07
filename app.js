@@ -19,7 +19,7 @@ app.use(subscription);
 app.use(dashboard);
 app.use(complaint);
 
-const port=5000;
+const port=process.env.PORT || 5000;
 app.listen(port,()=>{
     console.log(`Listing on port ${port}`);
 });
