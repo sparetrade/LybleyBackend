@@ -11,6 +11,7 @@ const subscribedPlanSchema=new mongoose.Schema({
    planName:{type:String},
    planDetail:{type:Object},
    planPrice:{type:Number},
+   planTime:{type:String},
    realEstateAgentName:{type:String},
    closingDate:{type:String},
 },{timestamps:true})
