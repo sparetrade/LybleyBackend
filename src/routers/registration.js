@@ -33,7 +33,7 @@ router.post("/ghjkl;", async (req, res) => {
     let body = req.body;
     let user = await Registration.findOne({ contact: body.contact });
     if (user) {
-      let otp = otpGenerator.generate(6, { upperCaseAlphabets: false, specialChars: false, lowerCaseAlphabets: false });
+      let otp = otpGenerator.generate(5, { upperCaseAlphabets: false, specialChars: false, lowerCaseAlphabets: false });
       await Registration.findByIdAndUpdate({ _id: user._id }, { otp: otp });
       smsSend(otp, body.contact);
       res.json({ status: true, msg: "OTP Sent" });
