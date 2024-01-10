@@ -1,8 +1,8 @@
 const fast2sms = require("fast-two-sms");
 // const nodemailer =  require("nodemailer");
-// const multer = require("multer");
-// const multers3 = require("multer-s3");
-// const aws = require("aws-sdk");
+const multer = require("multer");
+const multers3 = require("multer-s3");
+const aws = require("aws-sdk");
 // const qr=require("qrcode");
 // require('dotenv').config();
 //const {S3Client,PutObjectCommand,GetObjectCommand } = require("@aws-sdk/client-s3");
@@ -55,25 +55,25 @@ function smsSend(otp,mobile){
 // }
 // }
 
-// const s3=new aws.S3({
-//   region:process.env.AWS_BUCKET_REGION,
-//   accessKeyId:process.env.AWS_ACCESS_KEY,
-//   secretAccessKey:process.env.AWS_SECRET_KEY
-// })
+const s3=new aws.S3({
+  region:process.env.AWS_BUCKET_REGION,
+  accessKeyId:process.env.AWS_ACCESS_KEY,
+  secretAccessKey:process.env.AWS_SECRET_KEY
+})
 
-// const upload=()=>multer({
-//   storage:multers3({
-//     s3,
-//     bucket:"lybley-webapp-collection",
-//     metadata:function(req,file,cb){
-//        cb(null,{fieldName:file.fieldname});
-//     },
-//     key:async function(req,file,cb){
-//       const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9)
-//       cb(null,file.originalname + '-' + uniqueSuffix);
-//     }
-//   })
-// }) 
+const upload=()=>multer({
+  storage:multers3({
+    s3,
+    bucket:"sparetrade-bucket",
+    metadata:function(req,file,cb){
+       cb(null,{fieldName:file.fieldname});
+    },
+    key:async function(req,file,cb){
+      const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9)
+      cb(null,file.originalname + '-' + uniqueSuffix);
+    }
+  })
+}) 
 
 
 
@@ -95,4 +95,5 @@ function smsSend(otp,mobile){
 
 module.exports={
     smsSend,
+    upload
   }
