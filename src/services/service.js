@@ -4,8 +4,8 @@ const multer = require("multer");
 const multers3 = require("multer-s3");
 const aws = require("aws-sdk");
 // const qr=require("qrcode");
-// require('dotenv').config();
-//const {S3Client,PutObjectCommand,GetObjectCommand } = require("@aws-sdk/client-s3");
+require('dotenv').config();
+// const {S3Client,PutObjectCommand,GetObjectCommand } = require("@aws-sdk/client-s3");
 
 function smsSend(otp,mobile){
 

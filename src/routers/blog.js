@@ -3,15 +3,30 @@ const router = new express.Router();
 const Blog = require("../models/blog");
 const { upload } = require("../services/service");
 
+// router.post("/createBlog", async (req, res) => {
+//     try {
+//         let body=req.body
+//         console.log(body);
+//         // let image = req.file.location;
+//         // let data = new Blog({ ...body, image: image  });
+//         // let data1 = await data.save();
+//         res.json({ status: true, msg: "Blog Created" });
+//     } catch (err) {
+//         res.status(400).send(err);
+//     }
+// });
+
 router.post("/createBlog",upload().single("image"), async (req, res) => {
     try {
-        let body = req.body;
+        if (!req.file || !req.body) {
+            return res.status(400).json({ status: false, msg: "Invalid request format" });
+        }
         let image = req.file.location;
-        let data = new Blog({ ...body, image: image  });
+        let data = new Blog({ ...req.body, image: image });
         let data1 = await data.save();
         res.json({ status: true, msg: "Blog Created" });
     } catch (err) {
-        res.status(400).send(err);
+        res.status(400).send(err.message || err);
     }
 });
 
