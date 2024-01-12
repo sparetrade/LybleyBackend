@@ -21,7 +21,7 @@ app.use(dashboard);
 app.use(complaint);
 app.use(blog)
 
-const port=5000;
+const port=process.env.PORT || 5000;
 app.listen(port,()=>{
     console.log(`Listing on port ${port}`);
 });
