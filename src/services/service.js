@@ -1,5 +1,5 @@
 const fast2sms = require("fast-two-sms");
-// const nodemailer =  require("nodemailer");
+const nodemailer =  require("nodemailer");
 const multer = require("multer");
 const multers3 = require("multer-s3");
 const aws = require("aws-sdk");
@@ -22,6 +22,39 @@ function smsSend(otp,mobile){
       console.log(err);
     }) 
   }
+
+async function careerOrContactMail(name, contact, email, message){
+ 
+  let transporter = nodemailer.createTransport({
+    host: 'smtp.zoho.in',
+    port:587,
+    secure:false,
+    requireTLS:true,
+    auth: {
+        user:"hi@sparetrade.in",
+        pass:"o7Sy?dpc" 
+    }
+  });
+
+  // Email content
+  let mailOptions = {
+    from: `<${email}>`,
+    to: 'help@lybley.com', 
+    subject: 'New Contact Form Submission',
+    text: `
+      Name: ${name}
+      Contact: ${contact}
+      Email: ${email}
+      Message: ${message}
+    `
+  };
+
+  try {
+    let info = await transporter.sendMail(mailOptions);
+}catch(err){
+  console.log("err",err);
+}
+}
 
 // async function sendMail(email,pass,isForget){
 //      let transporter = nodemailer.createTransport({
@@ -95,5 +128,6 @@ const upload=()=>multer({
 
 module.exports={
     smsSend,
-    upload
+    upload,
+    careerOrContactMail
   }
