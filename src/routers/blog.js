@@ -30,6 +30,19 @@ router.post("/createBlog",upload().single("image"), async (req, res) => {
     }
 });
 
+router.patch("/updateBlogImage/:id",upload().single("image"), async (req, res) => {
+    try {
+        let _id=req.params.id;
+        let image1 = req.file.location;
+        let data = await Blog.findById(_id);
+           data.image = image1;
+           await data.save();
+        res.json({status:true,msg:"Updated"});
+    } catch (err) {
+        res.status(400).send(err);
+    }
+});
+
 router.get("/getAllBlogs", async (req, res) => {
     try {
         let data = await Blog.find({});
