@@ -2,11 +2,14 @@ const express=require("express");
 const router= express.Router();
 const Complaint=require("../models/complaint");
 const AssignComplaint=require("../models/assignComplaint");
+const {upload}=require("../services/service");
 
-router.post("/createComplaint",async(req,res)=>{
+router.post("/createComplaint",upload().single("image"),async(req,res)=>{
    try{
       let body=req.body;
-      let data=new Complaint(body);
+      body.user=JSON.parse(body.user);
+      let img=req.file.location;
+      let data=new Complaint({...body,image:img});
       await data.save();
       res.json({status:true,msg:"Created"});
    }catch(err){
@@ -46,8 +49,7 @@ router.get("/getComplaintByUser/:id",async(req,res)=>{
 router.post("/assignComplaint",async(req,res)=>{
     try{
       let body=req.body;
-      let body1={...body,technicianId:body.technicianInfo._id,userId:body.userInfo._id,complaintId:body.complaintInfo._id};
-      let data=new AssignComplaint(body1);
+      let data=new AssignComplaint(body);
       await data.save();
       await Complaint.findByIdAndUpdate(body.complaintInfo._id,{status:"ASSIGNED"});
       res.json({status:true,msg:"Technician Assigned"});
