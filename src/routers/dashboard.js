@@ -13,7 +13,8 @@ router.get("/dashboardDetail",async(req,res)=>{
         let servicer= await Servicer.countDocuments().exec();
         let subscribedPlan= await SubscribedPlan.countDocuments().exec();
         let complaint=await Complaint.countDocuments().exec();
-        res.json({plans:plans,users:users,servicer:servicer,subscribedPlan:subscribedPlan,complaint:complaint});
+        let complaintData=await Complaint.find({}); 
+        res.json({plans:plans,users:users,servicer:servicer,subscribedPlan:subscribedPlan,complaint:complaint,complaintData:complaintData});
      }catch(err){
         res.status(400).send(err);
      }

@@ -4,11 +4,20 @@ const Registration = require("../models/registration");
 const otpGenerator = require('otp-generator');
 const { smsSend } = require("../services/service");
 const Subscription = require("../models/subscribedPlan");
+require("dotenv").config();
+const Razorpay=require("razorpay");
+const crypto=require("crypto");
+const instance = new Razorpay({ key_id: process.env.RAZORPAY_KEY_ID, key_secret: process.env.RAZORPAY_KEY_SECRET });
 
 
-router.post("/registration", async (req, res) => {
+router.post("/registrationAndPayment", async (req, res) => {
   try {
-    let body = req.body;
+    const {razorpay_order_id,razorpay_payment_id,razorpay_signature}=req.body.response;
+    const body=razorpay_order_id + "|" + razorpay_payment_id;
+    const expectedSignature=crypto.createHmac('sha256',process.env.RAZORPAY_KEY_SECRET).update(body.toString()).digest("hex");
+    const isAuthentic=expectedSignature===razorpay_signature;
+    if(isAuthentic){
+    let body = req.body.customerData;
     let body1 = { name: body.name, contact: body.contact, email: body.email };
     let user = await Registration.findOne({ contact: body.contact });
     if (user) {
@@ -23,8 +32,23 @@ router.post("/registration", async (req, res) => {
       await subBody1.save();
     }
     res.json({ status: true, msg: "Plan Subscribed" });
+  }else{
+    res.status(400).json({status:false});
+  }
   } catch (err) {
     res.status(400).send(err);
+  }
+});
+
+router.post("/payment",async(req,res)=>{
+  try{
+   const order=await instance.orders.create({
+     amount: (+req.body.amount)*100,
+     currency: "INR",
+   });
+   res.send(order);
+  }catch(err){
+       res.status(400).send(err);
   }
 });
 
