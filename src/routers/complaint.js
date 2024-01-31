@@ -8,6 +8,7 @@ router.post("/createComplaint",upload().single("image"),async(req,res)=>{
    try{
       let body=req.body;
       body.user=JSON.parse(body.user);
+      body.appliancesDetail=JSON.parse(body.appliancesDetail);
       let img=req.file.location;
       let data=new Complaint({...body,image:img});
       await data.save();

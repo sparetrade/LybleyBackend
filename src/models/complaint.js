@@ -5,6 +5,8 @@ const complaintSchema=new mongoose.Schema({
       user:{type:Object},
       applianceName:{type:String},
       partName:{type:String},
+      appliancesDetail:{type:Object},
+      planId:{type:String},
       description:{type:String},
       status:{type:String,default:"PENDING"},
       image:{type:String}
