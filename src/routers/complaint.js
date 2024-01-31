@@ -58,6 +58,18 @@ router.post("/assignComplaint",async(req,res)=>{
     }
 });
 
+router.post("/updateAssignComplaint",async(req,res)=>{
+    try{
+      let _id=req.params.id;
+      let body=req.body;
+      await AssignComplaint.findByIdAndUpdate({_id:body.assignId},{status:"CLOSE"});
+      await Complaint.findByIdAndUpdate({_id:body.complaintId},{status:"CLOSE"});
+      res.json({status:true,msg:"Closed"});
+    }catch(err){
+      res.status(500).send(err);
+    }
+});
+
 router.get("/getAssinedComplaintByUser/:id",async(req,res)=>{
     try{
      let id=req.params.id;
