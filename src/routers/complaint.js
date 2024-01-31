@@ -62,7 +62,7 @@ router.post("/updateAssignComplaint",async(req,res)=>{
     try{
       let _id=req.params.id;
       let body=req.body;
-      await AssignComplaint.findByIdAndUpdate({_id:body.assignId},{status:"CLOSE"});
+      await AssignComplaint.findByIdAndUpdate({_id:body.assignId},{$set:{status:"CLOSE","complaintInfo.status":"CLOSE"}});
       await Complaint.findByIdAndUpdate({_id:body.complaintId},{status:"CLOSE"});
       res.json({status:true,msg:"Closed"});
     }catch(err){
