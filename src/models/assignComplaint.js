@@ -7,6 +7,7 @@ const assignComplaintSchema=new mongoose.Schema({
      technicianInfo:{type:Object},
      userInfo:{type:Object},
      complaintInfo:{type:Object},
+     status:{type:String,default:"ASSIGNED"}
 },{timestamps:true});
 
 const assignComplaintModel=new mongoose.model("assignComplaint",assignComplaintSchema);

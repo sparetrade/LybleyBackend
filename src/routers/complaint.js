@@ -8,6 +8,7 @@ router.post("/createComplaint",upload().single("image"),async(req,res)=>{
    try{
       let body=req.body;
       body.user=JSON.parse(body.user);
+      body.appliancesDetail=JSON.parse(body.appliancesDetail);
       let img=req.file.location;
       let data=new Complaint({...body,image:img});
       await data.save();
@@ -55,6 +56,18 @@ router.post("/assignComplaint",async(req,res)=>{
       res.json({status:true,msg:"Technician Assigned"});
     }catch(err){
       res.status(400).send(err);
+    }
+});
+
+router.post("/updateAssignComplaint",async(req,res)=>{
+    try{
+      let _id=req.params.id;
+      let body=req.body;
+      await AssignComplaint.findByIdAndUpdate({_id:body.assignId},{$set:{status:"CLOSE","complaintInfo.status":"CLOSE"}});
+      await Complaint.findByIdAndUpdate({_id:body.complaintId},{status:"CLOSE"});
+      res.json({status:true,msg:"Closed"});
+    }catch(err){
+      res.status(500).send(err);
     }
 });
 
