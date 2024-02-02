@@ -11,6 +11,7 @@ const complaint=require("./src/routers/complaint");
 const blog=require("./src/routers/blog");
 const contact=require("./src/routers/contact");
 const admin=require("./src/routers/admin");
+const subscriberVerify=require("./src/routers/subscriberVerification")
 
 app.use(express.json());
 app.use(cors());
@@ -23,6 +24,7 @@ app.use(dashboard);
 app.use(complaint);
 app.use(blog);
 app.use(contact);
+app.use(subscriberVerify);
 app.use(admin);
 
 const port=process.env.PORT || 5000;
