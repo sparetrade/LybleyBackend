@@ -18,7 +18,7 @@ router.post("/registrationAndPayment", async (req, res) => {
     const isAuthentic=expectedSignature===razorpay_signature;
     if(isAuthentic){
     let body = req.body.customerData;
-    let body1 = { name: body.name, contact: body.contact, email: body.email };
+    let body1 = { name: body.name, contact: body.contact, email: body.email,pincode:body.pincode };
     let user = await Registration.findOne({ contact: body.contact });
     if (user) {
       let subBody = { ...body, userId: user?._id };
