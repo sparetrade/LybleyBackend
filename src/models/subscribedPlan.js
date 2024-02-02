@@ -14,6 +14,7 @@ const subscribedPlanSchema=new mongoose.Schema({
    planTime:{type:String},
    realEstateAgentName:{type:String},
    closingDate:{type:String},
+   status:{type:String,default:"DISAPPROVED"},
 },{timestamps:true})
 
 const subscribedPlanModel=new mongoose.model("subscription",subscribedPlanSchema);

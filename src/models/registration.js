@@ -6,6 +6,7 @@ const registrationSchema=new mongoose.Schema({
     // unit:{type:Number,required:true},
     email:{type:String,required:true},
     contact:{type:Number,required:true},
+    pincode:{type:Number,required:true},
     role:{type:String,default:"USER"},
     otp:{type:String}
 },{timestamps:true})
