@@ -3,6 +3,7 @@ const express=require("express");
 const router= express.Router();
 const Verification=require("../models/subscribeVerification");
 const VerificationDetails=require("../models/verificationDetail");
+const Subscription=require("../models/subscribedPlan");
 const {upload}=require("../services/service");
 
 
@@ -68,33 +69,75 @@ router.get("/getAllAssignedVerification",async(req,res)=>{
 // technician verification details
 
  
-router.post("/verificationDetails",upload().array("images"), async (req, res) => {
+router.post("/addVerificationDetails", upload().array("images"), async (req, res) => {
   try {
-      let body = req.body;
-      let files = req.files;
-      let images = files?.map(f1 => f1.location);
-      // let obj = new VerificationDetails({ ...body, images: images });
-      // let data = await obj.save();
-      let newVerificationDetails = {
-        images: images,
-        description: body.description,
-        appliancesName: body.appliancesName,
-      };
-  
-      let existingDoc = await VerificationDetails.findOne({});
-      if (existingDoc) {
-        existingDoc.verificationDetails.push(newVerificationDetails);
-        let obj = new VerificationDetails({...body, verificationDetails: [newVerificationDetails] });
-        await obj.save();
-      } else {
-        let obj = new VerificationDetails({...body, verificationDetails: [newVerificationDetails] });
-        await obj.save();
-      }
-      res.json({ status: true, msg: "Details added successfully" });
+    let body = req.body;
+    let files = req.files;
+    let images = files?.map(f1 => f1.location);
+
+    let newVerificationDetails = {
+      images: images,
+      description: body.description,
+      appliancesName: body.appliancesName,
+    };
+
+    // Assuming you have userId and subscriptionId in the request body
+    let userId = body.userId;
+    let technicianId = body.technicianId;
+    let planId = body.planId;
+    let subscriptionId = body.subscriptionId;
+
+    // Find the document based on userId and subscriptionId
+    let existingDoc = await VerificationDetails.findOne({ userId: userId, subscriptionId: subscriptionId });
+
+    if (existingDoc) {
+      // Update the array in the existing document
+      existingDoc.verificationDetails.push(newVerificationDetails);
+      await existingDoc.save();
+    } else {
+      // Create a new document if it doesn't exist
+      let obj = new VerificationDetails({
+        userId: userId,
+        technicianId:technicianId,
+        subscriptionId: subscriptionId,
+        planId: planId,
+        verificationDetails: [newVerificationDetails]
+      });
+      await obj.save();
+    }
+
+    res.json({ status: true, msg: "Details added successfully" });
   } catch (err) {
-      res.status(400).send(err);
+    res.status(400).send(err);
   }
 });
+
+
+ 
+
+router.post("/updateVerificationDetails", async (req, res) => {
+  try {
+    let body = req.body;
+    
+
+    // Assuming userId is unique, use findOneAndUpdate
+    const updatedSubscription = await Subscription.findOneAndUpdate(
+      { userId: body.userId }, // Find the document by userId
+      { status: "APPROVED" }, // Update the status field
+      { new: true } // To return the updated document
+    );
+
+    if (updatedSubscription) {
+      res.json({ status: true, msg: "Updated successfully", updatedSubscription });
+    } else {
+      res.status(404).json({ status: false, msg: "Subscription not found" });
+    }
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Internal Server Error");
+  }
+});
+
 
 router.get("/getAllVerificationDetails",async(req,res)=>{
   try{
@@ -107,9 +150,9 @@ router.get("/getAllVerificationDetails",async(req,res)=>{
 
 router.get("/getVerificationDetailsBy/:id",async(req,res)=>{
   try{
-   let _id=req.params.id;
-   let subscription=await VerificationDetails.findById(_id);
-   res.send(subscription);
+   let id=req.params.id;
+   let data=await VerificationDetails.find({userId:id});
+   res.send(data);
   }catch(err){
    res.status(400).send(err);
   }
