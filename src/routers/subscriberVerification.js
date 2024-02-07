@@ -4,6 +4,7 @@ const router= express.Router();
 const Verification=require("../models/subscribeVerification");
 const VerificationDetails=require("../models/verificationDetail");
 const Subscription=require("../models/subscribedPlan");
+const SubscriptionVerification=require("../models/subscribeVerification");
 const {upload}=require("../services/service");
 
 
@@ -126,8 +127,16 @@ router.post("/updateVerificationDetails", async (req, res) => {
       { status: "APPROVED" }, // Update the status field
       { new: true } // To return the updated document
     );
-
-    if (updatedSubscription) {
+    const updatedSubscriberVerification = await SubscriptionVerification.findOneAndUpdate(
+      { userId: body.userId, planId: body.planId },  
+      { status: "VERIFIED" },  
+      { new: true }  
+  );
+  
+  if (updatedSubscriberVerification){
+    res.json({status:true,msg:"Updated successfully",updatedSubscriberVerification})
+  }
+    else if (updatedSubscription) {
       res.json({ status: true, msg: "Updated successfully", updatedSubscription });
     } else {
       res.status(404).json({ status: false, msg: "Subscription not found" });
