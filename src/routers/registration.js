@@ -52,18 +52,18 @@ router.post("/payment",async(req,res)=>{
   }
 });
 
-router.post("/ghjkl;", async (req, res) => {
+router.post("/sendOtp", async (req, res) => {
   try {
-    let body = req.body;
-    let user = await Registration.findOne({ contact: body.contact });
-    if (user) {
+     let body = req.body;
+    // let user = await Registration.findOne({ contact: body.contact });
+    // if (user) {
       let otp = otpGenerator.generate(5, { upperCaseAlphabets: false, specialChars: false, lowerCaseAlphabets: false });
-      await Registration.findByIdAndUpdate({ _id: user._id }, { otp: otp });
+      // await Registration.findByIdAndUpdate({ _id: user._id }, { otp: otp });
       smsSend(otp, body.contact);
       res.json({ status: true, msg: "OTP Sent" });
-    } else {
-      res.status(404).send({ status: false, msg: "Incorrect Mobile Number" });
-    }
+    // } else {
+    //   res.status(404).send({ status: false, msg: "Incorrect Mobile Number" });
+    // }
   } catch (err) {
     res.status(400).send(err);
   }
